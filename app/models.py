@@ -1,26 +1,75 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from __future__ import annotations
+
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, mapped_column
 from sqlalchemy.orm import relationship
 
-from .database import Base
+from typing import List, Optional
+
+from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import relationship
+
+
+class Base(DeclarativeBase):
+    pass
 
 
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    is_active = Column(Boolean, default=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column()
+    hashed_password: Mapped[str] = mapped_column()
+    is_active: Mapped[bool] = mapped_column()
 
-    records = relationship("Record", back_populates="owner")
+    records: Mapped[List["HealthRecord"]] = relationship(back_populates="owner")
+
+    def __repr__(self):
+        return f"User(id={self.id}, email={self.email})"
 
 
-class Record(Base):
+class HealthRecord(Base):
     __tablename__ = "records"
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    description = Column(String, index=True)
-    owner_id = Column(Integer, ForeignKey("users.id"))
+    id: Mapped[int] = mapped_column(primary_key=True)
+    record_type: Mapped[str] = mapped_column()
+    description: Mapped[str] = mapped_column()
 
+    owner_id: Mapped[int] = Column(Integer, ForeignKey("users.id"))
+    owner: Mapped["User"] = relationship(back_populates="records")
+
+    # time
+    start_date: Mapped[Optional[str]] = mapped_column()
+    end_date: Mapped[Optional[str]] = mapped_column()
+
+    # referral
+    referral_to: Mapped[Optional[str]] = mapped_column()
+
+    # medication
+    instructions: Mapped[Optional[str]] = mapped_column()
+    dose: Mapped[Optional[str]] = mapped_column()
+    dose_unit: Mapped[Optional[str]] = mapped_column()
+
+    # lab
+    value: Mapped[Optional[str]] = mapped_column()
+    value_unit: Mapped[Optional[str]] = mapped_column()
+
+    def __repr__(self):
+        return f"HealthRecord(id={self.id}, record_type={self.record_type})"
+
+class ProblemRecord(Base):
+    __tablename__ = "problem_records"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    date: Mapped[str] = mapped_column()
+    record_type: Mapped[str] = mapped_column()
+    description: Mapped[str] = mapped_column()
+
+    records: Mapped[List["HealthRecord"]] = relationship(back_populates="problem")
+
+    owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("User", back_populates="records")
+

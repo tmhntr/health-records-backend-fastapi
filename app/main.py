@@ -11,11 +11,11 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-origins = [
-    "http://localhost",
-    "http://localhost:8080",
-    "http://localhost:8081",
-]
+# origins = [
+#     "http://localhost",
+#     "http://localhost:8080",
+#     "http://localhost:8081",
+# ]
 
 # app.add_middleware(
 #     CORSMiddleware,
@@ -27,10 +27,6 @@ origins = [
 
 app.include_router(routes.router)
 
-@app.get("/api")
+@app.get("/hello")
 def read_root():
-    return {"Hello": "World"}
-
-@app.get("/api/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+    return {"message": "World!"}

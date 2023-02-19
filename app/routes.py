@@ -8,8 +8,6 @@ from .dependencies import get_db
 
 
 router = APIRouter(
-    prefix="/api/v1",
-    tags=["v1"],
     responses={404: {"description": "Not found"}},
 )
 
@@ -42,9 +40,9 @@ def create_record_for_user(
     return controller.create_user_record(db=db, record=record, user_id=user_id)
 
 
-@router.get("/records/", response_model=list[schemas.Record])
-def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    records = controller.get_records(db, skip=skip, limit=limit)
+@router.get("/users/{user_id}/records/", response_model=list[schemas.Record])
+def read_items(user_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    records = controller.get_records(db, user_id, skip=skip, limit=limit)
     return records
 
 
