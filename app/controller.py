@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 
 from . import models, schemas
-from .utils import get_password_hash
+from app.utils import get_password_hash
 
 
 def get_user(db: Session, user_id: int) -> models.User:
@@ -32,7 +32,8 @@ def create_user(db: Session, user: schemas.UserCreate) -> models.User:
 
 
 def get_records(db: Session, user_id: int, skip: int = 0, limit: int = 100) -> list[models.HealthRecord]:
-    result = db.scalars(select(models.HealthRecord).where(models.HealthRecord.owner_id == user_id).order_by(models.HealthRecord.id).offset(skip).limit(limit))
+    result = db.scalars(select(models.HealthRecord).where(
+        models.HealthRecord.owner_id == user_id).order_by(models.HealthRecord.id).offset(skip).limit(limit))
     return result.all()
 
 

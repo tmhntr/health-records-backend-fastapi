@@ -1,16 +1,12 @@
 from __future__ import annotations
 
-from sqlalchemy import  ForeignKey
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 
 from typing import List, Optional
 
 from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, relationship, DeclarativeBase, mapped_column
 
 
 class Base(DeclarativeBase):
@@ -25,8 +21,11 @@ class User(Base):
     hashed_password: Mapped[str] = mapped_column()
     is_active: Mapped[bool] = mapped_column(default=True)
 
-    records: Mapped[List["HealthRecord"]] = relationship(back_populates="owner")
-    problems: Mapped[List["ProblemRecord"]] = relationship(back_populates="owner")
+    records: Mapped[List["HealthRecord"]] = \
+        relationship(back_populates="owner")
+
+    problems: Mapped[List["ProblemRecord"]] = \
+        relationship(back_populates="owner")
 
     def __repr__(self):
         return f"User(id={self.id}, email={self.email})"
@@ -43,8 +42,11 @@ class HealthRecord(Base):
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     owner: Mapped["User"] = relationship(back_populates="records")
 
-    problem_id: Mapped[Optional[int]] = mapped_column(ForeignKey("problem_records.id"))
-    problem: Mapped[Optional["ProblemRecord"]] = relationship(back_populates="records")
+    problem_id: Mapped[Optional[int]] = \
+        mapped_column(ForeignKey("problem_records.id"))
+        
+    problem: Mapped[Optional["ProblemRecord"]] = \
+        relationship(back_populates="records")
 
     # time
     start_date: Mapped[Optional[str]] = mapped_column()
@@ -65,6 +67,7 @@ class HealthRecord(Base):
     def __repr__(self):
         return f"HealthRecord(id={self.id}, record_type={self.record_type})"
 
+
 class ProblemRecord(Base):
     __tablename__ = "problem_records"
 
@@ -73,8 +76,8 @@ class ProblemRecord(Base):
     record_type: Mapped[str] = mapped_column()
     description: Mapped[str] = mapped_column()
 
-    records: Mapped[List["HealthRecord"]] = relationship(back_populates="problem")
+    records: Mapped[List["HealthRecord"]] \
+        = relationship(back_populates="problem")
 
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     owner: Mapped["User"] = relationship(back_populates="problems")
-

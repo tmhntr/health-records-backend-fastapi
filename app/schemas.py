@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 
 class RecordBase(BaseModel):
-    description: Union[str, None] = None
+    description: str
     record_type: str
     date: str = datetime.now().strftime("%Y-%m-%d")
 

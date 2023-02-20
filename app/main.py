@@ -1,6 +1,7 @@
-from typing import Union
-
 from fastapi import FastAPI
+from dotenv import load_dotenv
+
+load_dotenv(".env.dev")
 
 from . import models, routes
 from .database import engine
@@ -12,6 +13,7 @@ app = FastAPI()
 
 
 app.include_router(routes.router)
+
 
 @app.get("/hello")
 def read_root():
