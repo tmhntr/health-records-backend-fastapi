@@ -1,7 +1,6 @@
 from typing import Union
 
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
 from . import models, routes
 from .database import engine
