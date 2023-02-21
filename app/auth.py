@@ -1,5 +1,6 @@
 
 import os
+from fastapi.security import OAuth2PasswordBearer
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
 from datetime import datetime, timedelta
@@ -9,6 +10,10 @@ from sqlalchemy.orm import Session
 from app.controller import get_user_by_email
 from app.utils import verify_password
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+SECRET_KEY = "f8cf8fc4b3f31a1e1e0de2b84286130dc04715430cdb9020ca0986cda7071d8f"
+ALGORITHM = "HS256"
 
 def authenticate_user(db: Session, email: str, password: str):
     user = get_user_by_email(db, email)
@@ -19,8 +24,6 @@ def authenticate_user(db: Session, email: str, password: str):
     return user
 
 
-SECRET_KEY = "f8cf8fc4b3f31a1e1e0de2b84286130dc04715430cdb9020ca0986cda7071d8f"
-ALGORITHM = "HS256"
 
 
 def create_access_token(data: dict, expires_delta=timedelta(minutes=30)) -> str:

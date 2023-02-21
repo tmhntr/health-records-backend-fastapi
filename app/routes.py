@@ -83,15 +83,18 @@ def read_item(item_id: int, q: Union[str, None] = None):
 
 
 @router.post("/token", response_model=schemas.Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+async def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=400, detail="Incorrect username or password"
         )
-    access_token = create_access_token(data={"sub": user.email})
-
-    return {"access_token": access_token, "token_type": "bearer"}
+    
+    # access_token = create_access_token(data={"sub": user.email})
+    # return {"access_token": access_token, "token_type": "bearer"}
+    user_dict = {**request.session.get("user"), "email": user.email, "id": user.id}
+    request.session['user'] = user_dict
+    return RedirectResponse(url='/')
 
 
 @router.get("/users/me/", response_model=schemas.User)
@@ -99,15 +102,15 @@ async def read_users_me(current_user: schemas.User = Depends(get_current_user)):
     return current_user
 
 
-@router.route('/login')
+@router.route('/login/google')
 async def login(request: Request):
     # This creates the url for the /auth endpoint
-    redirect_uri = request.url_for('auth')
+    redirect_uri = request.url_for('auth_google')
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 
-@router.route('/auth')
-async def auth(request: Request):
+@router.route('/auth/google')
+async def auth_google(request: Request):
     try:
         access_token = await oauth.google.authorize_access_token(request)
     except OAuthError:
