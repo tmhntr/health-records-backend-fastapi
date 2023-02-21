@@ -12,7 +12,7 @@ from app.utils import verify_password
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-SECRET_KEY = "f8cf8fc4b3f31a1e1e0de2b84286130dc04715430cdb9020ca0986cda7071d8f"
+SECRET_KEY = os.environ("SECRET_KEY")
 ALGORITHM = "HS256"
 
 def authenticate_user(db: Session, email: str, password: str):
