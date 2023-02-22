@@ -1,18 +1,14 @@
 import logging
-import os
-import sys
+from app.env import env
 
 uvicorn_logger = logging.getLogger("uvicorn.error")
 uvicorn_logger.propagate = False
 
 logger = logging.getLogger(__name__)
-if os.getenv("ENVIRONMENT") == "development":
+if env.get("ENVIRONMENT") == "development":
     logging.basicConfig(level=logging.DEBUG)
 else:
     logging.basicConfig(level=logging.INFO)
-
-
-formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
 
 # file_handler = logging.FileHandler('app.log')
 # file_handler.setFormatter(formatter)

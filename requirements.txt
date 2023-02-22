@@ -10,3 +10,4 @@ authlib
 itsdangerous
 httpx
 python-dotenv
+fastapi_auth_middleware

@@ -35,6 +35,23 @@ class Record(RecordBase):
     class Config:
         orm_mode = True
 
+class RecordUpdate(BaseModel):
+    description: Optional[str] = None
+    record_type: Optional[str] = None
+    date: Optional[str] = None
+
+    start_date: Optional[Union[str, None]] = None
+    end_date: Optional[Union[str, None]] = None
+
+    referral_to: Optional[Union[str, None]] = None
+
+    instructions: Optional[Union[str, None]] = None
+    dose: Optional[Union[str, None]] = None
+    dose_unit: Optional[Union[str, None]] = None
+
+    value: Optional[Union[str, None]] = None
+    value_unit: Optional[Union[str, None]] = None
+
 
 class UserBase(BaseModel):
     email: str
@@ -51,6 +68,14 @@ class User(UserBase):
 
     class Config:
         orm_mode = True
+
+class UserUpdate(BaseModel):
+    email: Optional[str] = None
+    password: Optional[str] = None
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
 
 class Token(BaseModel):
     access_token: str

@@ -2,8 +2,7 @@ from fastapi import Depends, APIRouter, HTTPException
 from sqlalchemy.orm import Session
 
 from app import schemas, controller
-from app.auth import authenticate_user
-from app.dependencies import get_db
+from app.dependencies import get_current_user, get_db
 
 
 
@@ -27,7 +26,7 @@ def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return [schemas.User.from_orm(user) for user in users]
 
 @router.get("/me/", response_model=schemas.User)
-async def read_users_me(current_user: schemas.User = Depends(authenticate_user)):
+async def read_users_me(current_user: schemas.User = Depends(get_current_user)):
     return current_user
 
 @router.get("/{user_id}", response_model=schemas.User)
