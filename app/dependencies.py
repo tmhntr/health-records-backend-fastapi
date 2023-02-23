@@ -1,9 +1,9 @@
-import logging
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, Request, status
 
 from app import models, schemas
 from app.database import SessionLocal
+from app.log import logger
 # from app.auth import SECRET_KEY, ALGORITHM
 # from app.controller import get_user_by_email
 # from app.auth import oauth2_scheme
@@ -24,8 +24,9 @@ async def get_current_user(request: Request, db: Session = Depends(get_db)):
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Session"},
     )
+    logger.debug(request.session)
     user = request.session.get("user")
-    logging.debug(user)
+    logger.debug(user)
     if user:
         user = db.query(models.User).filter(models.User.email == user.get("email")).first()
         if user:

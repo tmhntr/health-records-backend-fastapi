@@ -1,4 +1,3 @@
-import logging
 from authlib.integrations.starlette_client import OAuthError
 from starlette.responses import RedirectResponse
 from fastapi import Depends, APIRouter, HTTPException, Request
@@ -8,13 +7,13 @@ from fastapi.security import OAuth2PasswordRequestForm
 from app import schemas
 from app.dependencies import get_db
 from app.auth import authenticate_user, oauth
+from app.log import logger
 
 
 router = APIRouter(
     responses={404: {"description": "Not found"}},
     tags=["auth"],
 )
-
 
 
 @router.post("/auth", response_model=schemas.Token)
@@ -26,7 +25,7 @@ async def login_for_access_token(request: Request, form_data: OAuth2PasswordRequ
         )
     if user:
         user_dict = {"email": user.email, "user_id": user.id}
-        logging.info(user_dict)
+        logger.debug(user_dict)
         request.session['user'] = user_dict
     return {"access_token": user.email, "token_type": "bearer"}
     
@@ -48,7 +47,7 @@ async def auth_via_google(request: Request):
         ) 
     user = token.get('userinfo')
     if user:
-        logging.info(dict(user))
+        logger.debug(dict(user))
         request.session['user'] = dict(user)
     return RedirectResponse(url='/')
 
