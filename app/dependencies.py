@@ -1,12 +1,11 @@
 from sqlalchemy.orm import Session
-from fastapi import Depends, HTTPException, Request, status
+from fastapi import Depends, HTTPException, Request, Response, status
 
 from app import models, schemas
+from app.auth import VerifyToken, token_auth_scheme
 from app.database import SessionLocal
 from app.log import logger
-# from app.auth import SECRET_KEY, ALGORITHM
-# from app.controller import get_user_by_email
-# from app.auth import oauth2_scheme
+
 
 
 # Dependency
@@ -18,37 +17,27 @@ def get_db():
         db.close()
 
 
-async def get_current_user(request: Request, db: Session = Depends(get_db)):
+def authenticate_user(response: Response, db: Session = Depends(get_db), token: str = Depends(token_auth_scheme)) -> schemas.TokenData:
+    result = VerifyToken(token.credentials).verify()  # 👈 updated code
+
+    # 👇 new code
+    if result.get("status"):
+       response.status_code = status.HTTP_400_BAD_REQUEST
+       return result
+    # 👆 new code
+ 
+    return result
+
+
+async def get_current_user(user_data: schemas.TokenData = Depends(authenticate_user), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Session"},
     )
-    logger.debug(request.session)
-    user = request.session.get("user")
-    logger.debug(user)
+    user = db.query(models.User).filter(models.User.email == user_data.get("email")).first()
     if user:
-        user = db.query(models.User).filter(models.User.email == user.get("email")).first()
-        if user:
-            return user
+        return user
     raise credentials_exception
 
-# async def get_current_user(user: models.User, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> models.User:
-#     credentials_exception = HTTPException(
-#         status_code=status.HTTP_401_UNAUTHORIZED,
-#         detail="Could not validate credentials",
-#         headers={"WWW-Authenticate": "Bearer"},
-#     )
-#     try:
-#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-#         email: str = payload.get("sub")
-#         user = get_user_by_email(db, email=email)
-#     except:
-#         raise credentials_exception
-#     return user
 
-
-# def get_current_active_user(current_user: models.User = Depends(get_current_user)) -> models.User:
-#     if not current_user.is_active:
-#         raise HTTPException(status_code=400, detail="Inactive user")
-#     return current_user

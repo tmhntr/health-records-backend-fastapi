@@ -5,8 +5,7 @@ from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app import schemas
-from app.dependencies import get_db
-from app.auth import authenticate_user, oauth
+from app.dependencies import get_db, authenticate_user
 from app.log import logger
 
 
@@ -25,36 +24,36 @@ async def login_for_access_token(request: Request, form_data: OAuth2PasswordRequ
         )
     if user:
         user_dict = {"email": user.email, "user_id": user.id}
-        logger.debug(user_dict)
+        # logger.debug(user_dict)
         request.session['user'] = user_dict
     return {"access_token": user.email, "token_type": "bearer"}
     
 
 from starlette.requests import Request
 
-@router.get("/login/google")
-async def login_via_google(request: Request):
-    redirect_uri = request.url_for('auth_via_google')
-    return await oauth.google.authorize_redirect(request, redirect_uri)
+# @router.get("/login/google")
+# async def login_via_google(request: Request):
+#     redirect_uri = request.url_for('auth_via_google')
+#     return await oauth.google.authorize_redirect(request, redirect_uri)
 
-@router.get("/auth/google")
-async def auth_via_google(request: Request):
-    try:
-        token = await oauth.google.authorize_access_token(request)
-    except OAuthError as error:
-        raise HTTPException(
-            status_code=401, detail="Token authorization failed: " + error.error
-        ) 
-    user = token.get('userinfo')
-    if user:
-        logger.debug(dict(user))
-        request.session['user'] = dict(user)
-    return RedirectResponse(url='/')
+# @router.get("/auth/google")
+# async def auth_via_google(request: Request):
+#     try:
+#         token = await oauth.google.authorize_access_token(request)
+#     except OAuthError as error:
+#         raise HTTPException(
+#             status_code=401, detail="Token authorization failed: " + error.error
+#         ) 
+#     user = token.get('userinfo')
+#     if user:
+#         logger.debug(dict(user))
+#         request.session['user'] = dict(user)
+#     return RedirectResponse(url='/')
 
-@router.route('/logout')
-async def logout(request):
-    request.session.pop('user', None)
-    return RedirectResponse(url='/')
+# @router.get('/logout')
+# async def logout(request: Request):
+#     request.session.pop('user', None)
+#     return {'message': 'Logged out'}
 # from fastapi import Depends, HTTPException
 
 

@@ -10,7 +10,6 @@ uvicorn_logger.propagate = False
 logging.getLogger("uvicorn.access").propagate = False
 
 logger = logging.getLogger(__name__)
-print("LOGGING_CONFIG", LOGGING_CONFIG)
 # logging.basicConfig(**LOGGING_CONFIG)
 if env.get("ENVIRONMENT") == "development":
     logging.basicConfig(level=logging.DEBUG)

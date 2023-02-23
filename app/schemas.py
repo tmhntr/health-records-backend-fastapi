@@ -58,24 +58,20 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    password: str
+    pass
 
 
 class User(UserBase):
     id: int
     is_active: bool
-    records: list[Record] = []
+    # records: list[Record] = []
 
     class Config:
         orm_mode = True
 
 class UserUpdate(BaseModel):
     email: Optional[str] = None
-    password: Optional[str] = None
 
-class UserLogin(BaseModel):
-    email: str
-    password: str
 
 class Token(BaseModel):
     access_token: str
@@ -85,3 +81,5 @@ class TokenData(BaseModel):
     email: Optional[str] = None
 
     
+class Count(BaseModel):
+    count: int

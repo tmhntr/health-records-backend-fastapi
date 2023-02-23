@@ -18,7 +18,7 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column()
-    hashed_password: Mapped[str] = mapped_column()
+    # hashed_password: Mapped[str] = mapped_column()
     is_active: Mapped[bool] = mapped_column(default=True)
 
     records: Mapped[List["HealthRecord"]] = \

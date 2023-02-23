@@ -12,10 +12,13 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=schemas.User)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db), user_data: schemas.TokenData = Depends(get_current_user)):
     db_user = controller.get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
+    if user_data.email != user.email:
+        raise HTTPException(status_code=403, detail="Forbidden")
+        
     db_user = controller.create_user(db=db, user=user)
     return schemas.User.from_orm(db_user)
 

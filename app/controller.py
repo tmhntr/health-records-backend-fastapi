@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from . import models, schemas
 from app.utils import get_password_hash
@@ -23,8 +23,8 @@ def get_users(db: Session, skip: int = 0, limit: int = 100) -> list[models.User]
 
 
 def create_user(db: Session, user: schemas.UserCreate) -> models.User:
-    hashed_password = get_password_hash(user.password)
-    db_user = models.User(email=user.email, hashed_password=hashed_password)
+    # hashed_password = get_password_hash(user.password)
+    db_user = models.User(email=user.email)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -53,6 +53,17 @@ def get_records(db: Session, user_id: int, skip: int = 0, limit: int = 100, sort
     result = db.scalars(result)
     return result.all()
 
+def get_records_count(db: Session, user_id: int, filter: str = None) -> int:
+    result = select(models.HealthRecord).where(
+        models.HealthRecord.owner_id == user_id)
+        
+    if filter:
+        for key, value in filter.items():
+            result = result.where(getattr(models.HealthRecord, key) == value)
+
+    result = db.scalars(result).all()
+    return len(result)
+
 def get_record(db: Session, record_id: int) -> models.HealthRecord:
     result = db.scalars(select(models.HealthRecord).where(models.HealthRecord.id == record_id))
     return result.first()
@@ -68,9 +79,12 @@ def update_record(db: Session, record: schemas.RecordUpdate, record_id: int) -> 
     db_record = get_record(db, record_id=record_id)
     if db_record is None:
         return None
-    for key, value in record.dict(exclude_unset=True).items():
-        setattr(db_record, key, value)
-    db.commit()
+    stmt = (
+        update(models.HealthRecord)
+        .where(models.HealthRecord.id == record_id)
+        .values(**record.dict(exclude_unset=True))
+    )
+    db.execute(stmt)
     db.refresh(db_record)
     return db_record
 
