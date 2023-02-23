@@ -5,13 +5,24 @@ from app.database import engine
 from app import env
 
 from starlette.middleware.sessions import SessionMiddleware
+from starlette.middleware.cors import CORSMiddleware
 
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+app.debug = True
+
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://localhost:8080",
+    "http://health.timhunterdev.com"
+]
+
 app.add_middleware(SessionMiddleware, secret_key="some-random-string", max_age=None)
+app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 app.include_router(routes.auth.router)
 app.include_router(routes.records.router)
