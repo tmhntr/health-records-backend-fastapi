@@ -8,6 +8,7 @@ on:
 
 env:
   tag: ${{ secrets.DOCKERHUB_USERNAME }}/health-backend:latest
+  token: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
 
@@ -17,7 +18,7 @@ jobs:
       - name: tag_version
         uses: mathieudutour/github-tag-action@v6.1
         with: 
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ env.token }}
     outputs:
       tag: ${{ steps.tag_version.outputs.new_tag }}
 
