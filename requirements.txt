@@ -3,3 +3,12 @@ pydantic==1.10.4
 SQLAlchemy==2.0.1
 uvicorn>=0.15.0,<0.16.0
 psycopg2>=2.9.1,<3.0.0
+python-jose[cryptography]
+passlib
+python-multipart
+authlib
+itsdangerous
+httpx
+python-dotenv
+fastapi_auth_middleware
+pyjwt
