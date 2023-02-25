@@ -8,16 +8,20 @@ on:
 
 env:
   tag: ${{ secrets.DOCKERHUB_USERNAME }}/health-backend:latest
+  token: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
 
   get-tag:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: tag_version
         uses: mathieudutour/github-tag-action@v6.1
         with: 
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ env.token }}
+          fetch_all_tags: true
     outputs:
       tag: ${{ steps.tag_version.outputs.new_tag }}
 
