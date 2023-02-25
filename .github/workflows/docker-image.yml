@@ -28,6 +28,7 @@ jobs:
             echo "tag=${{ env.tag }},${{ secrets.DOCKERHUB_USERNAME }}/health-backend:${{ steps.tag_version.outputs.new_tag }}" >> "$GITHUB_OUTPUT"
           else
             echo "tag=${{ env.tag }}" >> "$GITHUB_OUTPUT"
+          fi
 
   docker:
     runs-on: ubuntu-latest
