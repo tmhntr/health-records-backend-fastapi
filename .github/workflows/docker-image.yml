@@ -23,12 +23,10 @@ jobs:
           github_token: ${{ env.token }}
           fetch_all_tags: true
       - run: |
-          if [ ${{ steps.tag_version.outputs.tag != '' }} ]
+          if [ ${{ steps.tag_version.outputs.new_tag == '' }} ]
           then
-            echo "tag=${{ env.tag }},${{ secrets.DOCKERHUB_USERNAME }}/health-backend:${{ steps.tag_version.outputs.tag }}" >> $GITHUB_ENV
+            echo "tag=${{ env.tag }},${{ secrets.DOCKERHUB_USERNAME }}/health-backend:${{ steps.tag_version.outputs.new_tag }}" >> $GITHUB_ENV
           fi
-    outputs:
-      tag: ${{ steps.tag_version.outputs.new_tag }}
 
   docker:
     runs-on: ubuntu-latest
