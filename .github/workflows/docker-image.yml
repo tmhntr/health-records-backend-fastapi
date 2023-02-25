@@ -19,12 +19,14 @@ jobs:
     outputs:
       tag: ${{ steps.set_tag.outputs.tag }}
     steps:
-      - name: tag_version
+      - name: Tag version
+        id: tag_version
         uses: mathieudutour/github-tag-action@v6.1
         with: 
           github_token: ${{ env.token }}
           fetch_all_tags: true
-      - name: set_tag
+      - name: Set tag
+        id: set_tag
         run: |
           if [ ${{ steps.tag_version.outputs.new_tag == '' }} ]
           then
