@@ -16,13 +16,16 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.set_tag.outputs.tag }}
     steps:
       - name: tag_version
         uses: mathieudutour/github-tag-action@v6.1
         with: 
           github_token: ${{ env.token }}
           fetch_all_tags: true
-      - run: |
+      - name: set_tag
+        run: |
           if [ ${{ steps.tag_version.outputs.new_tag == '' }} ]
           then
             echo "tag=${{ env.tag }},${{ secrets.DOCKERHUB_USERNAME }}/health-backend:${{ steps.tag_version.outputs.new_tag }}" >> "$GITHUB_OUTPUT"
