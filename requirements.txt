@@ -11,3 +11,4 @@ itsdangerous
 httpx
 python-dotenv
 fastapi_auth_middleware
+pyjwt

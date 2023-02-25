@@ -17,15 +17,17 @@ def get_db():
         db.close()
 
 
-def authenticate_user(response: Response, db: Session = Depends(get_db), token: str = Depends(token_auth_scheme)) -> schemas.TokenData:
-    result = VerifyToken(token.credentials).verify()  # 👈 updated code
-
-    # 👇 new code
+def authenticate_user(response: Response, token: str = Depends(token_auth_scheme)) -> schemas.TokenData:
+    logger.debug(token)
+    result = VerifyToken(token.credentials).verify() 
+    logger.debug(result)
     if result.get("status"):
-       response.status_code = status.HTTP_400_BAD_REQUEST
-       return result
-    # 👆 new code
- 
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=result.get("msg") or "Could not validate credentials",
+            headers={"WWW-Authenticate": "Session"},
+        )
     return result
 
 

@@ -1,7 +1,7 @@
 from fastapi import Depends, Response, status
 from fastapi.security import OAuth2PasswordBearer, HTTPBearer
 from datetime import datetime, timedelta
-from jose import jwt
+import jwt
 from sqlalchemy.orm import Session
 from app import schemas
 
@@ -9,7 +9,7 @@ from app.env import env, set_up
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-token_auth_scheme = HTTPBearer()  # 👈 new code
+token_auth_scheme = HTTPBearer() 
 
 
 class VerifyToken():
@@ -17,7 +17,7 @@ class VerifyToken():
 
     def __init__(self, token):
         self.token = token
-        self.config = set_up(())
+        self.config = set_up()
 
         # This gets the JWKS from a given URL and does processing so you can
         # use any of the keys available
