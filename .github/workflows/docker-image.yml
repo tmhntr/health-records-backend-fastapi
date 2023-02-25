@@ -28,5 +28,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: tmhntr/health-backend:latest
-          tags: tmhntr/health-backend:$(date +%s)
+          tags: 
+            - tmhntr/health-backend:latest
+            - tmhntr/health-backend:$(date +%s)
