@@ -22,7 +22,7 @@ jobs:
         with: 
           github_token: ${{ env.token }}
           fetch_all_tags: true
-      - run: if [ ${{ steps.tag_version.outputs.tag != '' }} ] then; echo "tag=${{ env.tag }},${{ secrets.DOCKERHUB_USERNAME }}/health-backend:${{ steps.tag_version.outputs.tag }}" >> $GITHUB_ENV; fi
+      - run: [ ${{ steps.tag_version.outputs.tag != '' }} ] && echo "tag=${{ env.tag }},${{ secrets.DOCKERHUB_USERNAME }}/health-backend:${{ steps.tag_version.outputs.tag }}" >> $GITHUB_ENV
     outputs:
       tag: ${{ steps.tag_version.outputs.new_tag }}
 
