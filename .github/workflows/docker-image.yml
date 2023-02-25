@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  tag: ${{ env.DOCKERHUB_USERNAME }}/health-backend:latest
+  tag: ${{ secrets.DOCKERHUB_USERNAME }}/health-backend:latest
 
 jobs:
 
