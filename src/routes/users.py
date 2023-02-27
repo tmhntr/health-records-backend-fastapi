@@ -2,7 +2,7 @@ from fastapi import Depends, APIRouter, HTTPException
 from sqlalchemy.orm import Session
 
 
-from .. import controllers, schemas, dependencies, env
+from .. import controllers, schemas, dependencies, utils
 
 import logging
 logger = logging.getLogger(__name__)
@@ -18,7 +18,7 @@ router = APIRouter(
 def create_user(user: schemas.UserCreate, db: Session = Depends(dependencies.get_db)):
     controller = controllers.UserController(db)
 
-    if user.key != env.env.get("USER_REGISTRATION_KEY"):
+    if user.key != utils.env_get("USER_REGISTRATION_KEY"):
         raise HTTPException(status_code=403, detail="Forbidden")
 
     db_user = controller.get_user_by_email(email=user.email)
