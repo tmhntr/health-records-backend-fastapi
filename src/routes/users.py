@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 
 from .. import schemas, controller, dependencies, log
 
+import logging
+logger = logging.getLogger(__name__)
 
 
 router = APIRouter(
@@ -14,7 +16,9 @@ router = APIRouter(
 @router.post("/", response_model=schemas.User)
 def create_user(request: Request, user: schemas.UserCreate, db: Session = Depends(dependencies.get_db)):
     if not request.headers.get('origin') == 'dev-mx-lf095.us.auth0.com':
-        raise HTTPException(status_code=403, detail=f"Forbidden: Not from Auth0 (dev-mx-lf095.us.auth0.com) - {request.headers.get('origin')}")
+        msg = f"Forbidden: Not from Auth0 (dev-mx-lf095.us.auth0.com) - {request.headers.get('origin')}"
+        logger.debug(msg)
+        raise HTTPException(status_code=403, detail=msg)
     db_user = controller.get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registereed")
