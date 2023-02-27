@@ -2,4 +2,3 @@ __pycache__/
 .env.local
 data/
 .DS_Store
-.config
