@@ -51,7 +51,7 @@ class RecordController:
     def __init__(self, db: Session):
         self.db = db
 
-    def create_record(self, record: schemas.RecordCreate, user_id: int) -> models.Record:
+    def create_record(self, record: schemas.RecordCreate, user_id: int) -> models.HealthRecord:
         db_record = models.Record(**record.dict(), owner_id=user_id)
         self.db.add(db_record)
         self.db.commit()
