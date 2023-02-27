@@ -28,7 +28,7 @@ origins = [
     "http://localhost:3000",
     "http://localhost:8080",
     "http://localhost:8081",
-    "dev-mx-lf095.us.auth0.com",
+    "https://dev-mx-lf095.us.auth0.com",
     "http://health.timhunterdev.com"
 ]
 
