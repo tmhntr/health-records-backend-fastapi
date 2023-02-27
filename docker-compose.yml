@@ -13,9 +13,9 @@ services:
       - DATABASE_LOGIN_URL=postgresql://postgres:secret@db/postgres
       - ENVIRONMENT=development
     ports:
-      - '8000:8000'
-    volumes:
-      - ./src:/app/src:cached # <--- This will map ./api to /root/app inside the container.
+      - '8080:5000'
+    # volumes:
+    #   - ./src:/app/src:cached # <--- This will map ./api to /root/app inside the container.
   db:
     image: postgres:13
     volumes:

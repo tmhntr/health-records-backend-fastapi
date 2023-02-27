@@ -1,7 +1,5 @@
 # syntax=docker/dockerfile:1
 FROM python:3.9
-LABEL maintainer Tim Hunter <thunte27@uwo.ca>
-LABEL version="0.1"
 
 WORKDIR /app
 
