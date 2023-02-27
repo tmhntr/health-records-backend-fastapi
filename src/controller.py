@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select, update
 
-from . import models, schemas
-from app.utils import get_password_hash
+import src.models as models
+import src.schemas as schemas
 
 
 def get_user(db: Session, user_id: int) -> models.User:

@@ -1,11 +1,8 @@
-from fastapi import Depends, Response, status
 from fastapi.security import OAuth2PasswordBearer, HTTPBearer
 from datetime import datetime, timedelta
 import jwt
-from sqlalchemy.orm import Session
-from app import schemas
 
-from app.env import env, set_up
+from src.env import env, set_up
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")

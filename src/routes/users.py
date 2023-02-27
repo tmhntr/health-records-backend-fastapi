@@ -1,8 +1,7 @@
 from fastapi import Depends, APIRouter, HTTPException
 from sqlalchemy.orm import Session
 
-from app import schemas, controller
-from app.dependencies import get_current_user, get_db
+from .. import schemas, controller, dependencies
 
 
 
@@ -12,7 +11,7 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=schemas.User)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db), user_data: schemas.TokenData = Depends(get_current_user)):
+def create_user(user: schemas.UserCreate, db: Session = Depends(dependencies.get_db), user_data: schemas.TokenData = Depends(dependencies.get_current_user)):
     db_user = controller.get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -24,16 +23,16 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db), user_da
 
 
 @router.get("/", response_model=list[schemas.User])
-def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(dependencies.get_db)):
     users = controller.get_users(db, skip=skip, limit=limit)
     return [schemas.User.from_orm(user) for user in users]
 
 @router.get("/me/", response_model=schemas.User)
-async def read_users_me(current_user: schemas.User = Depends(get_current_user)):
+async def read_users_me(current_user: schemas.User = Depends(dependencies.get_current_user)):
     return current_user
 
 @router.get("/{user_id}", response_model=schemas.User)
-def read_user(user_id: int, db: Session = Depends(get_db)):
+def read_user(user_id: int, db: Session = Depends(dependencies.get_db)):
     db_user = controller.get_user(db, user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
@@ -41,7 +40,7 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/{user_id}", response_model=schemas.User)
-def update_user(user_id: int, user: schemas.User, db: Session = Depends(get_db)):
+def update_user(user_id: int, user: schemas.User, db: Session = Depends(dependencies.get_db)):
     db_user = controller.get_user(db, user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
@@ -50,7 +49,7 @@ def update_user(user_id: int, user: schemas.User, db: Session = Depends(get_db))
 
 
 @router.delete("/{user_id}", response_model=schemas.User)
-def delete_user(user_id: int, db: Session = Depends(get_db)):
+def delete_user(user_id: int, db: Session = Depends(dependencies.get_db)):
     db_user = controller.get_user(db, user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")

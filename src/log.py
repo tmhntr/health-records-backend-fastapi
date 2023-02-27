@@ -3,7 +3,9 @@ import sys
 
 from uvicorn.config import LOGGING_CONFIG
 from uvicorn.logging import DefaultFormatter
-from app.env import env
+
+# local imports
+from src.env import env
 
 uvicorn_logger = logging.getLogger("uvicorn.error")
 uvicorn_logger.propagate = False

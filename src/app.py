@@ -1,14 +1,24 @@
 from fastapi import FastAPI
+import uvicorn
 
-from app import models, routes
-from app.database import engine
-from app import env
+import src.models as models
+import src.routes as routes
+from src.database import engine
+
+import uvicorn
 
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.middleware.cors import CORSMiddleware
 
 
-models.Base.metadata.create_all(bind=engine)
+def create_tables():
+    try:
+        models.Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        print(e)
+
+create_tables()
+
 
 app = FastAPI()
 
@@ -24,7 +34,7 @@ origins = [
 app.add_middleware(SessionMiddleware, secret_key="some-random-string", max_age=None)
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
-app.include_router(routes.auth.router)
+# app.include_router(routes.auth.router)
 app.include_router(routes.records.router)
 app.include_router(routes.users.router)
 
@@ -40,3 +50,9 @@ app.include_router(routes.users.router)
 #     request.state.user = request.session.get("user")
 #     response = await call_next(request)
 #     return response
+
+def run():
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+if __name__ == "__main__":
+    run()

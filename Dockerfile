@@ -11,6 +11,6 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 COPY . .
 
-ENV PORT="80"
+ENV PORT=80
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "${PORT}"]
+CMD ["python", "main.py"]

@@ -1,17 +1,19 @@
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, Request, Response, status
 
-from app import models, schemas
-from app.auth import VerifyToken, token_auth_scheme
-from app.database import SessionLocal
-from app.log import logger
+# local imports
+import src.models as models
+import src.schemas as schemas
+from src.auth import VerifyToken, token_auth_scheme
+from src.database import SessionLocal
+from src.log import logger
 
 
 
 # Dependency
 def get_db():
-    db = SessionLocal()
     try:
+        db = SessionLocal()
         yield db
     finally:
         db.close()
