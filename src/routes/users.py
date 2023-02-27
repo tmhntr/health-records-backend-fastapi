@@ -1,7 +1,7 @@
-from fastapi import Depends, APIRouter, HTTPException
+from fastapi import Depends, APIRouter, HTTPException, Request
 from sqlalchemy.orm import Session
 
-from .. import schemas, controller, dependencies
+from .. import schemas, controller, dependencies, log
 
 
 
@@ -10,28 +10,33 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
+@router.post("", response_model=schemas.User)
 @router.post("/", response_model=schemas.User)
-def create_user(user: schemas.UserCreate, db: Session = Depends(dependencies.get_db), user_data: schemas.TokenData = Depends(dependencies.get_current_user)):
+def create_user(request: Request, user: schemas.UserCreate, db: Session = Depends(dependencies.get_db)):
+    if not request.headers['host'] == 'dev-mx-lf095.us.auth0.com':
+        # log.logger.info("request.headers['host'] = " + request.headers['host'])
+        raise HTTPException(status_code=403, detail="Forbidden: Not from Auth0 (dev-mx-lf095.us.auth0.com) - " + request.headers['host'])
     db_user = controller.get_user_by_email(db, email=user.email)
     if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    if user_data.email != user.email:
-        raise HTTPException(status_code=403, detail="Forbidden")
+        raise HTTPException(status_code=400, detail="Email already registereed")
+    # check the request is from https://dev-mx-lf095.us.auth0.com
+    # if user_data.email != user.email:
+    #     raise HTTPException(status_code=403, detail="Forbidden")
         
     db_user = controller.create_user(db=db, user=user)
     return schemas.User.from_orm(db_user)
 
 
-@router.get("/", response_model=list[schemas.User])
+@router.get("", response_model=list[schemas.User])
 def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(dependencies.get_db)):
     users = controller.get_users(db, skip=skip, limit=limit)
     return [schemas.User.from_orm(user) for user in users]
 
-@router.get("/me/", response_model=schemas.User)
+@router.get("/me/?", response_model=schemas.User)
 async def read_users_me(current_user: schemas.User = Depends(dependencies.get_current_user)):
     return current_user
 
-@router.get("/{user_id}", response_model=schemas.User)
+@router.get("/{user_id}/?", response_model=schemas.User)
 def read_user(user_id: int, db: Session = Depends(dependencies.get_db)):
     db_user = controller.get_user(db, user_id=user_id)
     if db_user is None:
@@ -39,7 +44,7 @@ def read_user(user_id: int, db: Session = Depends(dependencies.get_db)):
     return schemas.User.from_orm(db_user)
 
 
-@router.put("/{user_id}", response_model=schemas.User)
+@router.put("/{user_id}/?", response_model=schemas.User)
 def update_user(user_id: int, user: schemas.User, db: Session = Depends(dependencies.get_db)):
     db_user = controller.get_user(db, user_id=user_id)
     if db_user is None:
@@ -48,7 +53,7 @@ def update_user(user_id: int, user: schemas.User, db: Session = Depends(dependen
     return schemas.User.from_orm(db_user)
 
 
-@router.delete("/{user_id}", response_model=schemas.User)
+@router.delete("/{user_id}/?", response_model=schemas.User)
 def delete_user(user_id: int, db: Session = Depends(dependencies.get_db)):
     db_user = controller.get_user(db, user_id=user_id)
     if db_user is None:
