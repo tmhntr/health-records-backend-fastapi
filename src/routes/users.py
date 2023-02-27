@@ -30,15 +30,18 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(dependencies.get
 
 
 @router.get("", response_model=list[schemas.User])
+@router.get("/", response_model=list[schemas.User])
 def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(dependencies.get_db)):
     users = controller.get_users(db, skip=skip, limit=limit)
     return [schemas.User.from_orm(user) for user in users]
 
-@router.get("/me/?", response_model=schemas.User)
+@router.get("/me", response_model=schemas.User)
+@router.get("/me/", response_model=schemas.User)
 async def read_users_me(current_user: schemas.User = Depends(dependencies.get_current_user)):
     return current_user
 
-@router.get("/{user_id}/?", response_model=schemas.User)
+@router.get("/{user_id}", response_model=schemas.User)
+@router.get("/{user_id}/", response_model=schemas.User)
 def read_user(user_id: int, db: Session = Depends(dependencies.get_db)):
     db_user = controller.get_user(db, user_id=user_id)
     if db_user is None:
@@ -46,7 +49,8 @@ def read_user(user_id: int, db: Session = Depends(dependencies.get_db)):
     return schemas.User.from_orm(db_user)
 
 
-@router.put("/{user_id}/?", response_model=schemas.User)
+@router.put("/{user_id}", response_model=schemas.User)
+@router.put("/{user_id}/", response_model=schemas.User)
 def update_user(user_id: int, user: schemas.User, db: Session = Depends(dependencies.get_db)):
     db_user = controller.get_user(db, user_id=user_id)
     if db_user is None:
@@ -55,7 +59,8 @@ def update_user(user_id: int, user: schemas.User, db: Session = Depends(dependen
     return schemas.User.from_orm(db_user)
 
 
-@router.delete("/{user_id}/?", response_model=schemas.User)
+@router.delete("/{user_id}", response_model=schemas.User)
+@router.delete("/{user_id}/", response_model=schemas.User)
 def delete_user(user_id: int, db: Session = Depends(dependencies.get_db)):
     db_user = controller.get_user(db, user_id=user_id)
     if db_user is None:
