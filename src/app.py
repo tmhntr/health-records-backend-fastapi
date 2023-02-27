@@ -31,7 +31,16 @@ origins = [
     "http://localhost:8081",
     "https://dev-mx-lf095.us.auth0.com",
     "http://health.timhunterdev.com"
+    "https://health.timhunterdev.com"
 ]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.add_middleware(SessionMiddleware, secret_key="some-random-string", max_age=None)
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
