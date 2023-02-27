@@ -9,11 +9,11 @@ from src.env import env
 
 uvicorn_logger = logging.getLogger("uvicorn.error")
 uvicorn_logger.propagate = False
-logging.getLogger("uvicorn.access").propagate = False
+# logging.getLogger("uvicorn.access").propagate = False
 
 logger = logging.getLogger(__name__)
 # logging.basicConfig(**LOGGING_CONFIG)
-if env.get("ENVIRONMENT") == "development":
+if env.get("DEBUG"):
     logging.basicConfig(level=logging.DEBUG)
 else:
     logging.basicConfig(level=logging.INFO)
@@ -22,12 +22,12 @@ else:
 # file_handler.setFormatter(formatter)
 
 # logger.addHandler(file_handler)
-options = LOGGING_CONFIG.get("formatters", {}).get("uvicorn.access", {})
-options.pop("()", None)
-formatter = DefaultFormatter(**options, use_colors=True)
+# options = LOGGING_CONFIG.get("formatters", {}).get("uvicorn.access", {})
+# options.pop("()", None)
+# formatter = DefaultFormatter(**options, use_colors=True)
 
 # add stdout handler
 stream_handler = logging.StreamHandler(sys.stdout)
-stream_handler.setFormatter(formatter)
+# stream_handler.setFormatter(formatter)
 logger.addHandler(stream_handler)
 
