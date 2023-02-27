@@ -1,11 +1,10 @@
+import os
 from fastapi import FastAPI
-import uvicorn
 
 import src.models as models
 import src.routes as routes
 from src.database import engine
 
-import uvicorn
 
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.middleware.cors import CORSMiddleware
@@ -22,12 +21,14 @@ create_tables()
 
 app = FastAPI()
 
-app.debug = True
+app.debug = os.environ.get("DEBUG", False)
 
 origins = [
     "http://localhost",
     "http://localhost:3000",
     "http://localhost:8080",
+    "http://localhost:8081",
+    "dev-mx-lf095.us.auth0.com",
     "http://health.timhunterdev.com"
 ]
 
@@ -39,20 +40,3 @@ app.include_router(routes.records.router)
 app.include_router(routes.users.router)
 
 
-# @app.middleware("http")
-# async def add_process_time_header(request, call_next):
-#     response = await call_next(request)
-#     response.headers["X-Process-Time"] = "42ms"
-#     return response
-
-# @app.middleware("http")
-# async def get_user_from_session(request, call_next):
-#     request.state.user = request.session.get("user")
-#     response = await call_next(request)
-#     return response
-
-def run():
-    uvicorn.run(app, host="0.0.0.0", port=8000)
-
-if __name__ == "__main__":
-    run()
