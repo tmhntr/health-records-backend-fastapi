@@ -79,7 +79,7 @@ class Token(BaseModel):
     token_type: str
 
 class TokenData(BaseModel):
-    email: Optional[str] = None
+    sub: Optional[str] = None
 
     
 class Count(BaseModel):
