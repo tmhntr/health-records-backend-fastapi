@@ -55,6 +55,7 @@ class RecordUpdate(BaseModel):
 
 class UserBase(BaseModel):
     email: str
+    oauth_id: str
 
 
 class UserCreate(UserBase):

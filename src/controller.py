@@ -17,6 +17,10 @@ def get_user_by_email(db: Session, email: str) -> models.User:
     return result.first()
     # return db.query(models.User).filter(models.User.email == email).first()
 
+def get_user_by_oauth_id(db: Session, oauth_id: str) -> models.User:
+    result = db.scalars(select(models.User).where(models.User.oauth_id == oauth_id))
+    return result.first()
+    # return db.query(models.User).filter(models.User.oauth_id == oauth_id).first()
 
 def get_users(db: Session, skip: int = 0, limit: int = 100) -> list[models.User]:
     return db.scalars(select(models.User).order_by(models.User.id).offset(skip).limit(limit)).all()
@@ -24,7 +28,7 @@ def get_users(db: Session, skip: int = 0, limit: int = 100) -> list[models.User]
 
 def create_user(db: Session, user: schemas.UserCreate) -> models.User:
     # hashed_password = get_password_hash(user.password)
-    db_user = models.User(email=user.email)
+    db_user = models.User(email=user.email, oauth_id=user.oauth_id)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

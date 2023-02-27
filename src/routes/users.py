@@ -18,12 +18,17 @@ router = APIRouter(
 def create_user(user: schemas.UserCreate, db: Session = Depends(dependencies.get_db)):
     if user.key != env.env.get("USER_REGISTRATION_KEY"):
         raise HTTPException(status_code=403, detail="Forbidden")
-    db_user = controller.get_user_by_email(db, email=user.email)
+    db_user = controller.get_user_by_email(db, email=user.email) 
     if db_user:
-        raise HTTPException(status_code=400, detail="Email already registereed")
+        raise HTTPException(status_code=400, detail="User already registered")
+
+    db_user =  controller.get_user_by_oauth_id(db, oauth_id=user.oauth_id)
+    if db_user:
+        raise HTTPException(status_code=400, detail="User already registered")
     # check the request is from https://dev-mx-lf095.us.auth0.com
     # if user_data.email != user.email:
     #     raise HTTPException(status_code=403, detail="Forbidden")
+
         
     db_user = controller.create_user(db=db, user=user)
     return schemas.User.from_orm(db_user)

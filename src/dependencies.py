@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, Request, Response, status
+from src import controller
 
 # local imports
 import src.models as models
@@ -39,7 +40,7 @@ async def get_current_user(user_data: schemas.TokenData = Depends(authenticate_u
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Session"},
     )
-    user = db.query(models.User).filter(models.User.email == user_data.get("email")).first()
+    user = controller.get_user_by_oauth_id(db, oauth_id=user_data.get("sub"))
     if user:
         return user
     raise credentials_exception

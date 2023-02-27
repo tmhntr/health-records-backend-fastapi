@@ -10,13 +10,14 @@ from starlette.middleware.sessions import SessionMiddleware
 from starlette.middleware.cors import CORSMiddleware
 
 
-def create_tables():
-    try:
-        models.Base.metadata.create_all(bind=engine)
-    except Exception as e:
-        print(e)
+models.Base.metadata.create_all(bind=engine)
 
-create_tables()
+# def create_tables():
+#     try:
+#     except Exception as e:
+#         print(e)
+
+# create_tables()
 
 
 app = FastAPI()
