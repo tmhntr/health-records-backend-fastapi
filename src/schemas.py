@@ -58,7 +58,7 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    pass
+    key: str
 
 
 class User(UserBase):

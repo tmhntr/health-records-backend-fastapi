@@ -15,8 +15,8 @@ router = APIRouter(
 
 @router.post("", response_model=schemas.User)
 @router.post("/", response_model=schemas.User)
-def create_user(user: schemas.UserCreate, key: str, db: Session = Depends(dependencies.get_db)):
-    if key != env.env.get("USER_REGISTRATION_KEY"):
+def create_user(user: schemas.UserCreate, db: Session = Depends(dependencies.get_db)):
+    if user.key != env.env.get("USER_REGISTRATION_KEY"):
         raise HTTPException(status_code=403, detail="Forbidden")
     db_user = controller.get_user_by_email(db, email=user.email)
     if db_user:
