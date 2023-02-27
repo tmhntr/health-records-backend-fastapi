@@ -1,11 +1,8 @@
-from fastapi.security import OAuth2PasswordBearer, HTTPBearer
-from datetime import datetime, timedelta
+from fastapi.security import HTTPBearer
 import jwt
 
-from src.env import env, set_up
+from src.utils import set_up
 
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 token_auth_scheme = HTTPBearer() 
 
 
@@ -44,43 +41,3 @@ class VerifyToken():
             return {"status": "error", "message": str(e)}
 
         return payload
-
-# # OAuth settings
-# GOOGLE_CLIENT_ID = env.get('GOOGLE_CLIENT_SECRET') or None
-# GOOGLE_CLIENT_SECRET = env.get('GOOGLE_CLIENT_ID') or None
-# if GOOGLE_CLIENT_ID is None or GOOGLE_CLIENT_SECRET is None:
-#     raise BaseException('Missing env variables')
-
-# # Set up oauth
-# config_data = {'GOOGLE_CLIENT_ID': GOOGLE_CLIENT_ID,
-#                'GOOGLE_CLIENT_SECRET': GOOGLE_CLIENT_SECRET}
-# config = Config(environ=config_data)
-# oauth = OAuth(config)
-
-# CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
-# oauth.register(
-#     name='google',
-#     server_metadata_url=CONF_URL,
-#     client_kwargs={
-#         'scope': 'openid email profile'
-#     }
-# )
-
-# create secret key with command: openssl rand -hex 32
-SECRET_KEY = env.get("SECRET_KEY")
-ALGORITHM = "HS256"
-
-
-
-
-
-
-
-def create_access_token(data: dict, expires_delta=timedelta(minutes=30)) -> str:
-    to_encode = data.copy()
-    expire = datetime.utcnow() + expires_delta
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
-
-

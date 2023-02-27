@@ -1,14 +1,14 @@
 from sqlalchemy.orm import Session
-from fastapi import Depends, HTTPException, Request, Response, status
+from fastapi import Depends, HTTPException, Response, status
 
 # local imports
 import src.schemas as schemas
 from src.auth import VerifyToken, token_auth_scheme
 from src.database import SessionLocal
-from src.log import logger
+import logging
 from src.controllers import UserController
 
-
+logger = logging.getLogger(__name__)
 
 # Dependency
 def get_db():
