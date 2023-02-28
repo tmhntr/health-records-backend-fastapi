@@ -4,13 +4,8 @@ from sqlalchemy import select, update
 from src import utils
 
 from src.resources.user import model, schemas
-from src.utils import VerifyToken
+from src.utils import validate_user
 
-def validate_user(token) -> bool:
-    auth = VerifyToken(token.credentials).verify()
-    if auth.get("status") == "error":
-        raise HTTPException(status_code=401, detail="Unauthorized")
-    return auth
 
 class UserController:
     def __init__(self, db: Session):

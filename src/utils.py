@@ -1,5 +1,6 @@
 import os
 from configparser import ConfigParser
+from fastapi import HTTPException
 
 import jwt
 from dotenv import load_dotenv
@@ -72,3 +73,20 @@ class VerifyToken():
             return {"status": "error", "message": str(e)}
 
         return payload
+
+def validate_user(token) -> bool:
+    """Validate user token
+    
+    Args:
+        token (str): User token
+
+    Raises:
+        HTTPException: Unauthorized
+
+    Returns:
+        bool: True or False
+    """
+    auth = VerifyToken(token.credentials).verify()
+    if auth.get("status") == "error":
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    return auth
