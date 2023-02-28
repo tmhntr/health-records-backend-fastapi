@@ -69,8 +69,8 @@ class UserController:
         except:
             raise HTTPException(status_code=500, detail="Internal Server Error")
 
-    def update_user(self, token, user: schemas.UserUpdate, user_id: int) -> schemas.User:
-        auth = validate_user(user_id, token)
+    def update_user(self, token, user: schemas.UserUpdate, user_id) -> schemas.User:
+        auth = validate_user(token)
         if auth.get("sub") != user_id:
             raise HTTPException(status_code=403, detail="Forbidden")
 
@@ -83,7 +83,7 @@ class UserController:
             raise Exception("could not update user")
 
     def delete_user(self, token, user_id: int) -> schemas.User:
-        auth = validate_user(user_id, token)
+        auth = validate_user(token)
         if auth.get("sub") != user_id:
             raise HTTPException(status_code=403, detail="Forbidden")
 
