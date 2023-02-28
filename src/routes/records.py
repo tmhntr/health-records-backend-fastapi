@@ -61,7 +61,7 @@ async def read_records_count(db: Session = Depends(get_db), user: models.User = 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    count = controller.get_records_count(user_id=user.id)
+    count = controller.get_record_count(user_id=user.id)
     return schemas.Count(count=count)
 
 
