@@ -1,35 +1,14 @@
 from __future__ import annotations
 
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship
-
 from typing import List, Optional
 
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, relationship, DeclarativeBase, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
+from src.database import Base
 
-class Base(DeclarativeBase):
-    pass
+# from src.resources.user.model import User
 
-
-class User(Base):
-    __tablename__ = "users"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    oauth_id: Mapped[str] = mapped_column()
-    email: Mapped[str] = mapped_column()
-    # hashed_password: Mapped[str] = mapped_column()
-    is_active: Mapped[bool] = mapped_column(default=True)
-
-    records: Mapped[List["HealthRecord"]] = \
-        relationship(back_populates="owner")
-
-    problems: Mapped[List["ProblemRecord"]] = \
-        relationship(back_populates="owner")
-
-    def __repr__(self):
-        return f"User(id={self.id}, email={self.email})"
 
 
 class HealthRecord(Base):
@@ -40,7 +19,7 @@ class HealthRecord(Base):
     description: Mapped[str] = mapped_column()
     date: Mapped[str] = mapped_column()
 
-    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    owner_id: Mapped[str] = mapped_column(ForeignKey("users.id"))
     owner: Mapped["User"] = relationship(back_populates="records")
 
     problem_id: Mapped[Optional[int]] = \
