@@ -103,5 +103,5 @@ class RecordController:
     def get_record_count(self, user_id: int) -> int:
         result = self.db.scalars(select(models.HealthRecord).where(
             models.HealthRecord.owner_id == user_id))
-        return result.count()
+        return len(result.all())
 
