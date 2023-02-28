@@ -29,7 +29,7 @@ async def create_record(record: schemas.RecordCreate, user: models.User = Depend
 @router.delete("/{record_id}", response_model=schemas.Record)
 @router.delete("/{record_id}/", response_model=schemas.Record)
 async def delete_record(record_id: int, user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
-    controller = controllers.UserController(db)
+    controller = controllers.RecordController(db)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -46,7 +46,7 @@ async def delete_record(record_id: int, user: models.User = Depends(get_current_
 @router.get("", response_model=list[schemas.Record])
 @router.get("/", response_model=list[schemas.Record])
 async def read_records(skip: int = 0, limit: int = 100, sort_by: str = None, sort_dir: str = None, filter: str = None, db: Session = Depends(get_db), user: models.User = Depends(get_current_user)):
-    controller = controllers.UserController(db)
+    controller = controllers.RecordController(db)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -57,7 +57,7 @@ async def read_records(skip: int = 0, limit: int = 100, sort_by: str = None, sor
 @router.get("/count", response_model=schemas.Count)
 @router.get("/count/", response_model=schemas.Count)
 async def read_records_count(db: Session = Depends(get_db), user: models.User = Depends(get_current_user)):
-    controller = controllers.UserController(db)
+    controller = controllers.RecordController(db)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -68,7 +68,7 @@ async def read_records_count(db: Session = Depends(get_db), user: models.User = 
 @router.get("/{record_id}", response_model=schemas.Record)
 @router.get("/{record_id}/", response_model=schemas.Record)
 async def read_record(record_id: int, db: Session = Depends(get_db), user: models.User = Depends(get_current_user)):
-    controller = controllers.UserController(db)
+    controller = controllers.RecordController(db)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -82,7 +82,7 @@ async def read_record(record_id: int, db: Session = Depends(get_db), user: model
 @router.put("/{record_id}", response_model=schemas.Record)
 @router.put("/{record_id}/", response_model=schemas.Record)
 async def update_record(record_id: int, record: schemas.RecordUpdate, db: Session = Depends(get_db), user: models.User = Depends(get_current_user)):
-    controller = controllers.UserController(db)
+    controller = controllers.RecordController(db)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
