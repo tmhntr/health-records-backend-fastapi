@@ -19,7 +19,7 @@ class HealthRecord(Base):
     description: Mapped[str] = mapped_column()
     date: Mapped[str] = mapped_column()
 
-    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    owner_id: Mapped[str] = mapped_column(ForeignKey("users.id"))
     owner: Mapped["User"] = relationship(back_populates="records")
 
     problem_id: Mapped[Optional[int]] = \

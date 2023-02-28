@@ -30,7 +30,7 @@ class RecordCreate(RecordBase):
 
 class Record(RecordBase):
     id: int
-    owner_id: int
+    owner_id: str
 
     class Config:
         orm_mode = True
@@ -52,3 +52,5 @@ class RecordUpdate(BaseModel):
     value: Optional[Union[str, None]] = None
     value_unit: Optional[Union[str, None]] = None
 
+class RecordCount(BaseModel):
+    count: int

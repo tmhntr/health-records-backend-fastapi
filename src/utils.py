@@ -86,7 +86,7 @@ def validate_user(token) -> bool:
     Returns:
         bool: True or False
     """
-    auth = VerifyToken(token.credentials).verify()
+    auth = VerifyToken(token).verify()
     if auth.get("status") == "error":
         raise HTTPException(status_code=401, detail="Unauthorized")
     return auth

@@ -72,5 +72,5 @@ class RecordController:
 
     def get_record_count(self, token) -> int:
         records = self.get_records(token, limit=None)
-        return len(records)
+        return schemas.RecordCount(count=len(records))
 

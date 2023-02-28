@@ -5,7 +5,7 @@ from src import dependencies
 from src.resources.record import schemas
 from src.resources.record.controller import RecordController
 
-get_current_user, get_db = dependencies.get_current_user, dependencies.get_db
+get_db =  dependencies.get_db
 
 
 router = APIRouter(
@@ -35,8 +35,8 @@ async def read_records(skip: int = 0, limit: int = 100, sort_by: str = None, sor
     controller = RecordController(db)
     return controller.get_records(token, skip=skip, limit=limit, sort_by=sort_by, sort_dir=sort_dir, filter=filter)
 
-@router.get("/count", response_model=schemas.Count)
-@router.get("/count/", response_model=schemas.Count)
+@router.get("/count", response_model=schemas.RecordCount)
+@router.get("/count/", response_model=schemas.RecordCount)
 async def read_records_count(db: Session = Depends(get_db), token = Depends(dependencies.oauth2_scheme)):
     controller = RecordController(db)
     return controller.get_record_count(token)

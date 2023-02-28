@@ -13,7 +13,7 @@ class UserController:
 
     
     def get_user(self, token, user_id) -> schemas.User:
-        auth = validate_user(user_id, token)
+        auth = validate_user(token)
         if auth.get("sub") != user_id:
             raise HTTPException(status_code=403, detail="Forbidden")
 
@@ -55,7 +55,7 @@ class UserController:
         if db_user:
             raise HTTPException(status_code=400, detail="Email already registered")
 
-        db_user = self.db.scalar(select(model.User).where(model.User.ID == data.user_id))
+        db_user = self.db.scalar(select(model.User).where(model.User.id == data.user_id))
         if db_user:
             raise HTTPException(status_code=400, detail="UserId already registered")
 
