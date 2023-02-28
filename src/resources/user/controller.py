@@ -80,7 +80,7 @@ class UserController:
             self.db.commit()
             return self.get_user(user_id)
         except:
-            raise Exception("could not update user")
+            raise HTTPException(status_code=500, detail="Internal Server Error")
 
     def delete_user(self, token, user_id) -> schemas.User:
         auth = validate_user(token)
@@ -94,4 +94,4 @@ class UserController:
             self.db.commit()
             return schemas.User.from_orm(user)
         except:
-            raise Exception("could not delete user")
+            raise HTTPException(status_code=500, detail="Internal Server Error")
