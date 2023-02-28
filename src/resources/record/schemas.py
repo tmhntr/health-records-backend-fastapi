@@ -52,35 +52,3 @@ class RecordUpdate(BaseModel):
     value: Optional[Union[str, None]] = None
     value_unit: Optional[Union[str, None]] = None
 
-
-class UserBase(BaseModel):
-    email: str
-    oauth_id: str
-
-
-class UserCreate(UserBase):
-    key: str
-
-
-class User(UserBase):
-    id: int
-    is_active: bool
-    # records: list[Record] = []
-
-    class Config:
-        orm_mode = True
-
-class UserUpdate(BaseModel):
-    email: Optional[str] = None
-
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-class TokenData(BaseModel):
-    sub: Optional[str] = None
-
-    
-class Count(BaseModel):
-    count: int

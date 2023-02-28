@@ -4,67 +4,6 @@ from sqlalchemy import select, update
 import src.models as models
 import src.schemas as schemas
 
-class UserController:
-    def __init__(self, db: Session):
-        self.db = db
-
-    def get_user(self, user_id: int) -> models.User:
-        try:
-            result = self.db.scalars(select(models.User).where(models.User.id == user_id))
-            return result.first()
-        except:
-            raise Exception("could not retrieve user")
-
-    def get_user_by_email(self, email: str) -> models.User:
-        try:
-            result = self.db.scalars(select(models.User).where(models.User.email == email))
-            return result.first()
-        except:
-            raise Exception("could not retrieve user")
-
-    def get_user_by_oauth_id(self, oauth_id: str) -> models.User:
-        try:
-            result = self.db.scalars(select(models.User).where(models.User.oauth_id == oauth_id))
-            return result.first()
-        except:
-            raise Exception("could not retrieve user")
-
-    def get_users(self, skip: int = 0, limit: int = 100) -> list[models.User]:
-        try:
-            result = self.db.scalars(select(models.User).order_by(models.User.id).offset(skip).limit(limit))
-            return result.all()
-        except:
-            raise Exception("could not retrieve users")
-
-    def create_user(self, user: schemas.UserCreate) -> models.User:
-        try:
-        # hashed_password = get_password_hash(user.password)
-            db_user = models.User(email=user.email, oauth_id=user.oauth_id)
-            self.db.add(db_user)
-            self.db.commit()
-            self.db.refresh(db_user)
-            return db_user
-        except:
-            raise Exception("could not create user")
-
-    def update_user(self, user: schemas.UserUpdate, user_id: int) -> models.User:
-        try:
-            result = update(models.User).where(models.User.id == user_id).values(**user.dict(exclude_unset=True))
-            self.db.execute(result)
-            self.db.commit()
-            return self.get_user(user_id)
-        except:
-            raise Exception("could not update user")
-
-    def delete_user(self, user_id: int) -> None:
-        try:
-            result = self.db.scalars(select(models.User).where(models.User.id == user_id))
-            user = result.first()
-            self.db.delete(user)
-            self.db.commit()
-        except:
-            raise Exception("could not delete user")
-
 class RecordController:
     def __init__(self, db: Session):
         self.db = db
