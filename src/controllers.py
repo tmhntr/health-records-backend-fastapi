@@ -47,6 +47,24 @@ class UserController:
         except:
             raise Exception("could not create user")
 
+    def update_user(self, user: schemas.UserUpdate, user_id: int) -> models.User:
+        try:
+            result = update(models.User).where(models.User.id == user_id).values(**user.dict(exclude_unset=True))
+            self.db.execute(result)
+            self.db.commit()
+            return self.get_user(user_id)
+        except:
+            raise Exception("could not update user")
+
+    def delete_user(self, user_id: int) -> None:
+        try:
+            result = self.db.scalars(select(models.User).where(models.User.id == user_id))
+            user = result.first()
+            self.db.delete(user)
+            self.db.commit()
+        except:
+            raise Exception("could not delete user")
+
 class RecordController:
     def __init__(self, db: Session):
         self.db = db

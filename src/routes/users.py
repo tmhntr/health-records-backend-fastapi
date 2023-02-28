@@ -65,7 +65,7 @@ def update_user(user_id: int, user: schemas.User, db: Session = Depends(dependen
     db_user = controller.get_user(user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    db_user = controllers.update_user(db=db, user=user, user_id=user_id)
+    db_user = controller.update_user(user=user, user_id=user_id)
     return schemas.User.from_orm(db_user)
 
 

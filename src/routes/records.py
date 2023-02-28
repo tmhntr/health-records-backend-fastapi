@@ -72,7 +72,9 @@ async def read_record(record_id: int, db: Session = Depends(get_db), user: model
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    db_record = controller.get_record(record_id=record_id)
+    db_record = controller.get_record(record_id=record_id, user_id=user.id)
+
+
     if db_record is None:
         raise HTTPException(status_code=404, detail="Record not found")
     if db_record.owner_id != user.id:
@@ -86,12 +88,11 @@ async def update_record(record_id: int, record: schemas.RecordUpdate, db: Sessio
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    db_record = controller.get_record(record_id=record_id)
+    db_record = controller.get_record(record_id=record_id, user_id=user.id)
     if db_record is None:
         raise HTTPException(status_code=404, detail="Record not found")
     if db_record.owner_id != user.id:
         raise HTTPException(status_code=403, detail="Forbidden")
-    for key, value in record.dict(exclude_unset=True).items():
-        setattr(db_record, key, value)
-    db_record = controllers.update_record(db, db_record, record)
+
+    db_record = controller.update_record(record, record_id=record_id, user_id=user.id)
     return schemas.Record.from_orm(db_record)
