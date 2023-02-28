@@ -82,7 +82,7 @@ class UserController:
         except:
             raise Exception("could not update user")
 
-    def delete_user(self, token, user_id: int) -> schemas.User:
+    def delete_user(self, token, user_id) -> schemas.User:
         auth = validate_user(token)
         if auth.get("sub") != user_id:
             raise HTTPException(status_code=403, detail="Forbidden")
